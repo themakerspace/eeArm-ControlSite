@@ -1,0 +1,99 @@
+<!doctype html>
+<html class="no-js" lang="">
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+        <title></title>
+        <meta name="description" content="">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <link rel="apple-touch-icon" href="apple-touch-icon.png">
+        <link rel="stylesheet" href="css/normalize.min.css">
+        <link rel="stylesheet" href="css/main.css">
+        <script src="js/vendor/modernizr-2.8.3.min.js"></script>
+        <script src="js/vendor/jquery-1.11.2.min.js"></script>
+        <style>
+            button{
+                margin-right: 20px;
+                width: 75px;
+            }
+            label{
+                width: 60px;
+                display: inline-block;
+                margin-left: 5px;
+            }
+        </style>
+    </head>
+    <body>
+        <!--[if lt IE 8]>
+                            <p class="browserupgrade">You are using an <strong>outdated</strong> browser. Please <a href="http://browsehappy.com/">upgrade your browser</a> to improve your experience.</p>
+        <![endif]-->
+        <div>
+            <label>X Axis</label>
+            <button id="xUp" data-x="5">xUp</button>
+            <button id="xDown" data-x="-5">xDown</button>
+        </div>
+        <div>
+            <label>Y Axis</label>
+            <button id="yUp" data-y="5">yUp</button>
+            <button id="yDown" data-y="-5">yDown</button>
+        </div>
+        <div>
+            <label>Z Axis</label>
+            <button id="zUp" data-z="5">zUp</button>
+            <button id="zDown" data-z="-5">zDown</button>
+        </div>
+        <div>
+            <label>Claw</label>
+            <button id="open" data-claw="0">open</button>
+            <button id="close" data-claw="1">close</button>
+        </div>
+        <label></label>
+        <p class="console"></p>
+        <script src="js/plugins.js"></script>
+        <script src="js/main.js"></script>
+        <!-- Google Analytics: change UA-XXXXX-X to be your site's ID. -->
+        <script>
+            $(function(){
+                var host = "http://gwaArm.local";
+
+                var x = 0,
+                    y = 0,
+                    z = 0,
+                    c = 0;
+
+                var updating;
+
+                $.get(host+"/arm",null,function(data){
+                    x = data.x;
+                    y = data.y;
+                    z = data.z;
+                });
+
+                $("button").on("click",function(e){
+                    x += ($(this).data("x") ? $(this).data("x") : 0);
+                    y += ($(this).data("y") ? $(this).data("y") : 0);
+                    z += ($(this).data("z") ? $(this).data("z") : 0);
+                    c = ($(this).data("claw") === 0  ? 0 : 1);
+
+                    $(".console").html("X, Y, Z, C: "+x+", "+y+", "+z+", "+c)
+
+                    if(!updating){
+                        updating = true;
+                        updateArm();
+                    }
+                });
+
+                function updateArm(){
+                    $.get(
+                        host+"/arm",
+                        {x:x,y:y,z:z,c:c},
+                        function(data){
+                            updating = false;
+                        });
+                }
+
+                function updatePosition(){}
+            })
+</script>
+    </body>
+</html>
