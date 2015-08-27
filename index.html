@@ -29,32 +29,35 @@
         <![endif]-->
         <div>
             <label>X Axis</label>
-            <button id="xUp" data-x="5">xUp</button>
-            <button id="xDown" data-x="-5">xDown</button>
+            <button id="xUp" data-x="10">xUp</button>
+            <button id="xDown" data-x="-10">xDown</button>
         </div>
         <div>
             <label>Y Axis</label>
-            <button id="yUp" data-y="5">yUp</button>
-            <button id="yDown" data-y="-5">yDown</button>
+            <button id="yUp" data-y="10">yUp</button>
+            <button id="yDown" data-y="-10">yDown</button>
         </div>
         <div>
             <label>Z Axis</label>
-            <button id="zUp" data-z="5">zUp</button>
-            <button id="zDown" data-z="-5">zDown</button>
+            <button id="zUp" data-z="10">zUp</button>
+            <button id="zDown" data-z="-10">zDown</button>
         </div>
         <div>
             <label>Claw</label>
-            <button id="open" data-claw="0">open</button>
-            <button id="close" data-claw="1">close</button>
+            <button id="open" data-c="-10">open</button>
+            <button id="close" data-c="10">close</button>
         </div>
-        <label></label>
+        <div>
+            <label>Home</label>
+            <button id="home" data-home="1">open</button>
+        </div>
         <p class="console"></p>
         <script src="js/plugins.js"></script>
         <script src="js/main.js"></script>
         <!-- Google Analytics: change UA-XXXXX-X to be your site's ID. -->
         <script>
             $(function(){
-                var host = "http://gwaArm.local";
+                var host = "http://192.168.4.1";
 
                 var x = 0,
                     y = 0,
@@ -64,16 +67,26 @@
                 var updating;
 
                 $.get(host+"/arm",null,function(data){
-                    x = data.x;
-                    y = data.y;
-                    z = data.z;
+                    x = data.base;
+                    y = data.body;
+                    z = data.neck;
+                    c = data.claw;
+
+                    $(".console").html("X, Y, Z, C: "+x+", "+y+", "+z+", "+c)
                 });
 
                 $("button").on("click",function(e){
-                    x += ($(this).data("x") ? $(this).data("x") : 0);
-                    y += ($(this).data("y") ? $(this).data("y") : 0);
-                    z += ($(this).data("z") ? $(this).data("z") : 0);
-                    c = ($(this).data("claw") === 0  ? 0 : 1);
+                    if($(this).data("home")==1){
+                        x=0;
+                        y=100;
+                        z=50;
+                        c=0;
+                    } else {
+                        x += ($(this).data("x") ? $(this).data("x") : 0);
+                        y += ($(this).data("y") ? $(this).data("y") : 0);
+                        z += ($(this).data("z") ? $(this).data("z") : 0);
+                        c += ($(this).data("c") ? $(this).data("c") : 0);
+                    }
 
                     $(".console").html("X, Y, Z, C: "+x+", "+y+", "+z+", "+c)
 
@@ -86,7 +99,7 @@
                 function updateArm(){
                     $.get(
                         host+"/arm",
-                        {x:x,y:y,z:z,c:c},
+                        {base:x,body:y,neck:z,claw:c},
                         function(data){
                             updating = false;
                         });
