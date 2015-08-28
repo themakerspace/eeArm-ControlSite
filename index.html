@@ -148,19 +148,19 @@
         <md-content flex style="padding-top: 75px;display: none; padding-left: 20px; padding-right:20px" id="settings">
             <md-input-container>
                 <label>Max Degrees</label>
-                <input type="number" ng-model="user.name">
+                <input type="number" ng-model="degrees">
             </md-input-container>
             <md-input-container>
                 <label>Increment Delay</label>
-                <input type="number" ng-model="user.name">
+                <input type="number" ng-model="delay">
             </md-input-container>
-            <md-button style="width: 100%; height: 50px" md-no-ink class="md-primary" ng-click="clickControl()">Update Settings</md-button>
+            <md-button id="update" style="width: 100%; height: 50px" md-no-ink class="md-primary" ng-click="clickControl()">Update Settings</md-button>
         </md-content>
 
         <md-content style="padding-top: 200px; width: 100%" id="loader">
-            <center><md-progress-circular md-mode="indeterminate"></md-progress-circular></center> 
+            <center><md-progress-circular md-mode="indeterminate" ng-click="updateSettings()"></md-progress-circular></center>
         </md-content>
-</div>
+    </div>
 
     <script src="/lib.js"></script>
     <script>
@@ -170,7 +170,12 @@
         var app = angular.module('robot', ['ngMaterial']);
 
         app.controller('robot-controller', ['$scope', '$mdSidenav', function ($scope, $mdSidenav) {
-           
+            $scope.degrees = 0;
+            $scope.delay = 0;
+            $scope.updateSettings = function () {
+                $.get(host + "/setincrementdelay", { delay: $scope.delay });
+                $.get(host + "/setmaxdegrees", { degrees: $scope.degrees });
+            }
             $scope.openLeftMenu = function () {
                 $mdSidenav('left').toggle();
             };
