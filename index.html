@@ -82,7 +82,7 @@
 <body ng-controller="robot-controller" style="overflow: hidden;">
     <md-toolbar>
         <div class="md-toolbar-tools">
-            <md-button class="md-icon-button md-primary fix-margin" aria-label="Settings" ng-click="openLeftMenu()">
+            <md-button id="menu" class="md-icon-button md-primary fix-margin" aria-label="Settings" ng-click="openLeftMenu()" disabled>
                 <md-icon md-svg-icon="menu.svg"></md-icon>
             </md-button>
             <span flex></span>
@@ -236,6 +236,7 @@
             };
             $.get(host + "/arm", null, function (data) {
                 setRobotState(data);
+                $('#menu').removeAttr('disabled');
                 $('#loader').css('display', 'none');
                 $('#status-meter').css('background-color', '#76FF03');
                 $('#controls').css('display', 'block');
