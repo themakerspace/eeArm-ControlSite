@@ -1,17 +1,26 @@
-<html lang="en" ng-app="robot">
+<html lang="en" ng-app="robot" manifest="cache.manifest">
 <head>
     <link rel="stylesheet" href="/styles.css">
     <meta name="viewport" content="initial-scale=1" />
+    <meta name="apple-mobile-web-app-title" content="eeArm">
+    <meta name='apple-mobile-web-app-capable' content='yes'>
+    <meta name='apple-touch-fullscreen' content='yes'>
+    <meta name='apple-mobile-web-app-status-bar-style' content='black-translucent'>
+    <meta name='format-detection' content='telephone=no'>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+
     <style>
         body {
-            font-size: 1.5em;
+            font-size: 1.2em;
         }
 
         .control {
-            height: 70px;
-            line-height: 70px;
+            height: 60px;
+            line-height:60px;
         }
-
+        md-toolbar {
+            position: fixed;
+        }
         .status {
             padding-top: 20px;
             justify-content: center;
@@ -32,48 +41,59 @@
         }
 
         #macro-controls {
-            padding-top: 20px;
+            padding-top: 10px;
         }
-        #macro-controls > button {
-            line-height: 50px;
-        }
+
+            #macro-controls > button {
+                line-height: 60px;
+            }
     </style>
 </head>
-<body ng-controller="robot-controller" flex="100">
-    <div layout="center center" class="status">
-        <div id="status-meter"style="background-color: red; border-radius: 100%; width: 35px; height: 35px"></div>
-    </div>
-    <div layout="center" class="control">
-        <div flex="30" layout="center center" class="control-label"><span>Base</span></div>
-        <div flex="35" layout="center center" class="control-button"><md-button md-no-ink class="md-primary" ng-click="baseRotateLeft()">Left</md-button></div>
-        <div flex="35" layout="center center" class="control-button"><md-button md-no-ink class="md-primary" ng-click="baseRotateRight()">Right</md-button></div>
-    </div>
-    <div layout="center" class="control">
-        <div flex="30" layout="center center" class="control-label"><span>Body</span></div>
-        <div flex="35" layout="center center" class="control-button"><md-button md-no-ink class="md-primary" ng-click="bodyMoveBackward()">Back</md-button></div>
-        <div flex="35" layout="center center" class="control-button"><md-button md-no-ink class="md-primary" ng-click="bodyMoveForward()">Forward</md-button></div>
-    </div>
-    <div layout="center" class="control">
-        <div flex="30" layout="center center" class="control-label"><span>Neck</span></div>
-        <div flex="35" layout="center center" class="control-button"><md-button md-no-ink class="md-primary" ng-click="neckMoveUp()">Up</md-button></div>
-        <div flex="35" layout="center center" class="control-button"><md-button md-no-ink class="md-primary" ng-click="neckMoveDown()">Down</md-button></div>
-    </div>
-    <div layout="center" class="control">
-        <div flex="30" layout="center center" class="control-label"><span>Claw</span></div>
-        <div flex="35" layout="center center" class="control-button"><md-button md-no-ink class="md-primary" ng-click="clawOpen()">Open</md-button></div>
-        <div flex="35" layout="center center" class="control-button"><md-button md-no-ink class="md-primary" ng-click="clawClose()">Close</md-button></div>
-    </div>
-    <div id="macro-controls" layout="column">
-        <md-button md-no-ink class="md-primary" ng-click="goStart()">Go To Start</md-button>
-        <md-button md-no-ink class="md-primary" ng-click="saveStep()">Save Step</md-button>
-        <md-button md-no-ink class="md-primary" ng-click="clearStep()">Delete Last Step</md-button>
-        <md-button md-no-ink class="md-primary" ng-click="clearSteps()">Clear Steps</md-button>
-        <md-button md-no-ink class="md-primary" ng-click="playSteps()">Play</md-button>
+<body ng-controller="robot-controller">
+
+    <div layout="column" layout-fill>
+        <md-toolbar >
+            <div class="md-toolbar-tools">
+                <span style="margin-bottom: -15px">eeArm</span>
+                <span flex></span>
+                <div layout="center center" class="status" style="margin-bottom: -15px">
+                   <div id="status-meter" style="background-color: #F44336; border-radius: 100%; width: 25px; height: 25px"></div>
+                </div>
+            </div>
+        </md-toolbar>
+        <md-content style="margin-top: 70px">
+            <div layout="center" class="control">
+                <div flex="30" layout="center center" class="control-label"><span>Base</span></div>
+                <div flex="35" layout="center center" class="control-button"><md-button md-no-ink class="md-primary" ng-click="baseRotateLeft()">Left</md-button></div>
+                <div flex="35" layout="center center" class="control-button"><md-button md-no-ink class="md-primary" ng-click="baseRotateRight()">Right</md-button></div>
+            </div>
+            <div layout="center" class="control">
+                <div flex="30" layout="center center" class="control-label"><span>Body</span></div>
+                <div flex="35" layout="center center" class="control-button"><md-button md-no-ink class="md-primary" ng-click="bodyMoveBackward()">Back</md-button></div>
+                <div flex="35" layout="center center" class="control-button"><md-button md-no-ink class="md-primary" ng-click="bodyMoveForward()">Forward</md-button></div>
+            </div>
+            <div layout="center" class="control">
+                <div flex="30" layout="center center" class="control-label"><span>Neck</span></div>
+                <div flex="35" layout="center center" class="control-button"><md-button md-no-ink class="md-primary" ng-click="neckMoveUp()">Up</md-button></div>
+                <div flex="35" layout="center center" class="control-button"><md-button md-no-ink class="md-primary" ng-click="neckMoveDown()">Down</md-button></div>
+            </div>
+            <div layout="center" class="control">
+                <div flex="30" layout="center center" class="control-label"><span>Claw</span></div>
+                <div flex="35" layout="center center" class="control-button"><md-button md-no-ink class="md-primary" ng-click="clawOpen()">Open</md-button></div>
+                <div flex="35" layout="center center" class="control-button"><md-button md-no-ink class="md-primary" ng-click="clawClose()">Close</md-button></div>
+            </div>
+            <div id="macro-controls" layout="column">
+                <md-button md-no-ink class="md-primary" ng-click="saveStep()">Save Step</md-button>
+                <md-button md-no-ink class="md-primary" ng-click="clearStep()">Delete Last Step</md-button>
+                <md-button md-no-ink class="md-primary" ng-click="clearSteps()">Clear Steps</md-button>
+                <md-button md-no-ink class="md-primary" ng-click="goStart()">Go To Start</md-button>
+                <md-button md-no-ink class="md-primary" ng-click="playSteps()">Play</md-button>
+            </div>
+        </md-content>
     </div>
 
     <script src="/lib.js"></script>
     <script>
-
         var app = angular.module('robot', ['ngMaterial']);
 
         app.controller('robot-controller', ['$scope', function ($scope, $mdSidenav) {
@@ -82,6 +102,7 @@
             var increment = 10;
             var clawIncrement = 5;
             var host = "http://192.168.4.1";
+
             var setRobotState = function (data) {
                 robot.Base = data.base;
                 robot.Body = data.body;
@@ -140,11 +161,10 @@
                 });
                 busy = false;
             };
-
             $.get(host + "/arm", null, function (data) {
                 setRobotState(data);
 
-                $('#status-meter').css('background-color', 'green');
+                $('#status-meter').css('background-color', '#76FF03');
 
                 $scope.baseRotateRight = function () {
                     if ((robot.Base - increment) < 0 || busy) {
@@ -207,7 +227,7 @@
                 };
 
                 $scope.saveStep = function () {
-                    queueRobotCommand(robot, 3, 8);
+                    queueRobotCommand(robot, 0, 500);
                 };
 
                 $scope.clearStep = function () {
@@ -225,7 +245,7 @@
                 $scope.goStart = function () {
                     goToStart();
                 };
-            });
+            })
         }]);
 
     </script>
