@@ -16,11 +16,13 @@
 
         .control {
             height: 60px;
-            line-height:60px;
+            line-height: 60px;
         }
+
         md-toolbar {
             position: fixed;
         }
+
         .status {
             padding-top: 20px;
             justify-content: center;
@@ -47,21 +49,56 @@
             #macro-controls > button {
                 line-height: 60px;
             }
+
+        md-sidenav, md-backdrop {
+            min-height: 100%;
+            position: fixed;
+            margin-top: 64px;
+        }
+
+        svg {
+            fill: rgba(255,255,255,0.87);
+        }
+
+        md-sidenav {
+            width: 100% !important;
+            min-width: 100% !important;
+            max-width: 100% !important;
+        }
+
+            md-sidenav button {
+                width: 100%;
+                height: 50px;
+                padding: 0;
+                margin: 0 !important;
+            }
+
+        a {
+            color: rgb(63,81,181);
+            text-decoration: none;
+        }
     </style>
 </head>
-<body ng-controller="robot-controller">
-
-    <div layout="column" layout-fill>
-        <md-toolbar >
-            <div class="md-toolbar-tools">
-                <span style="margin-bottom: -15px">eeArm</span>
-                <span flex></span>
-                <div layout="center center" class="status" style="margin-bottom: -15px">
-                   <div id="status-meter" style="background-color: #F44336; border-radius: 100%; width: 25px; height: 25px"></div>
-                </div>
+<body ng-controller="robot-controller" style="overflow: hidden;">
+    <md-toolbar>
+        <div class="md-toolbar-tools">
+            <md-button class="md-icon-button md-primary fix-margin" aria-label="Settings" ng-click="openLeftMenu()">
+                <md-icon md-svg-icon="menu.svg"></md-icon>
+            </md-button>
+            <span flex></span>
+            <span class="fix-margin" style="margin-left: -25px;">eeArm</span>
+            <span flex></span>
+            <div layout="center center" class="status fix-margin">
+                <div id="status-meter" style="background-color: #F44336; border-radius: 100%; width: 25px; height: 25px"></div>
             </div>
-        </md-toolbar>
-        <md-content style="margin-top: 70px">
+        </div>
+    </md-toolbar>
+    <div layout="row" flex>
+        <md-sidenav md-component-id="left" class="md-whiteframe-z2">
+            <md-button md-no-ink class="md-primary" ng-click="clickControl()">Control Panel</md-button>
+            <md-button md-no-ink class="md-primary" ng-click="clickSettings()">Settings</md-button>
+        </md-sidenav>
+        <md-content flex style="padding-top: 64px; display: none" id="controls">
             <div layout="center" class="control">
                 <div flex="30" layout="center center" class="control-label"><span>Base</span></div>
                 <div flex="35" layout="center center" class="control-button"><md-button md-no-ink class="md-primary" ng-click="baseRotateLeft()">Left</md-button></div>
@@ -89,14 +126,50 @@
                 <md-button md-no-ink class="md-primary" ng-click="goStart()">Go To Start</md-button>
                 <md-button md-no-ink class="md-primary" ng-click="playSteps()">Play</md-button>
             </div>
+
         </md-content>
-    </div>
+        <md-content flex style="padding-top: 75px;display: none; padding-left: 20px; padding-right:20px" id="settings">
+            <md-input-container>
+                <label>Max Degrees</label>
+                <input type="number" ng-model="user.name">
+            </md-input-container>
+            <md-input-container>
+                <label>Increment Delay</label>
+                <input type="number" ng-model="user.name">
+            </md-input-container>
+            <md-button style="width: 100%; height: 50px" md-no-ink class="md-primary" ng-click="clickControl()">Update Settings</md-button>
+        </md-content>
+
+        <md-content style="padding-top: 200px; width: 100%" id="loader">
+            <center><md-progress-circular md-mode="indeterminate"></md-progress-circular></center> 
+        </md-content>
+</div>
 
     <script src="/lib.js"></script>
     <script>
+        if (("standalone" in window.navigator) && window.navigator.standalone) {
+            $('.fix-margin').css('margin-bottom', '-15px')
+        }
         var app = angular.module('robot', ['ngMaterial']);
 
-        app.controller('robot-controller', ['$scope', function ($scope, $mdSidenav) {
+        app.controller('robot-controller', ['$scope', '$mdSidenav', function ($scope, $mdSidenav) {
+           
+            $scope.openLeftMenu = function () {
+                $mdSidenav('left').toggle();
+            };
+
+            $scope.clickControl = function () {
+                $mdSidenav('left').toggle();
+                $('#settings').css('display', 'none')
+                $('#controls').css('display', 'block');
+            }
+
+            $scope.clickSettings = function () {
+                $mdSidenav('left').toggle();
+                $('#controls').css('display', 'none');
+                $('#settings').css('display', 'block');
+            }
+
             var busy = false;
             var robot = {};
             var increment = 10;
@@ -163,9 +236,9 @@
             };
             $.get(host + "/arm", null, function (data) {
                 setRobotState(data);
-
+                $('#loader').css('display', 'none');
                 $('#status-meter').css('background-color', '#76FF03');
-
+                $('#controls').css('display', 'block');
                 $scope.baseRotateRight = function () {
                     if ((robot.Base - increment) < 0 || busy) {
                         return;
